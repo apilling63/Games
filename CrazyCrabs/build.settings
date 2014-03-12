@@ -1,0 +1,59 @@
+-- Supported values for orientation:
+-- portrait, portraitUpsideDown, landscapeLeft, landscapeRight
+
+settings = {
+	
+	orientation = {
+		default = "landscapeRight",
+		supported = { "landscapeRight", }
+	},
+	
+	iphone = {
+		plist = {
+                        UIAppFonts = {
+                               	"GoodDog.otf"
+                        },
+			MinimumOSVersion="4.3.0",
+			FacebookAppID = "151025625078894",
+             		CFBundleIconFile = "Icon.png",
+             		CFBundleIconFiles = {
+                    		"Icon.png" , 
+                    		"Icon@2x.png" , 
+                    		"Icon-72.png" , 
+
+             		},
+
+			UIStatusBarHidden = true,
+			UIPrerenderedIcon = false,
+
+            
+            		-- iOS app URL schemes:
+	                CFBundleURLTypes = {
+                		{
+                    			CFBundleURLSchemes = {
+			                        "fb151025625078894",
+                    			}
+                		}
+            		}
+		}
+	},
+
+
+    	android = {
+        	usesPermissions = {
+            		"com.android.vending.BILLING",
+		        "android.permission.INTERNET",
+		        "android.permission.ACCESS_WIFI_STATE",
+		        "android.permission.READ_PHONE_STATE",
+		        "android.permission.ACCESS_NETWORK_STATE",
+        	},
+      		supportsScreens =
+      		{
+		         requiresSmallestWidthDp = 640,
+	        	 smallScreens = false,
+	        	 normalScreens = true,
+       			 largeScreens = true,
+		         xlargeScreens = true,
+      		}
+    	},
+}

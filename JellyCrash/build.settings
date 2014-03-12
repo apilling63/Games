@@ -1,0 +1,73 @@
+-- Supported values for orientation:
+-- portrait, portraitUpsideDown, landscapeLeft, landscapeRight
+
+settings = {
+	plugins =
+    	{
+        	["CoronaProvider.ads.vungle"] =
+        	{
+            		publisherId = "com.vungle",
+        	},
+        	--["CoronaProvider.ads.iads"] =
+        	--{
+        	--   publisherId = "com.coronalabs",
+	        --},
+        },   
+	orientation = {
+		default = "landscapeRight",
+		supported = { "landscapeRight", }
+	},
+	
+	iphone = {
+		plist = {
+                        UIAppFonts = {
+                               	"Exo-DemiBoldItalic.otf"
+                        },
+			MinimumOSVersion="5.1.1",
+			FacebookAppID = "151025625078894",
+             		CFBundleIconFile = "Icon.png",
+             		CFBundleIconFiles = {
+                    		"Icon.png" , 
+                    		"Icon@2x.png" , 
+                    		"Icon-72.png" , 
+			        "Icon-60.png",
+			        "Icon-60@2x.png",
+		    		"Icon-76.png",
+			        "Icon-76@2x.png",
+
+             		},
+
+			UIStatusBarHidden = true,
+			UIPrerenderedIcon = false,
+
+            
+            		-- iOS app URL schemes:
+	                CFBundleURLTypes = {
+                		{
+                    			CFBundleURLSchemes = {
+			                        "fb151025625078894",
+                    			}
+                		}
+            		}
+		}
+	},
+
+
+    	android = {
+        	usesPermissions = {
+            		"com.android.vending.BILLING",
+		        "android.permission.INTERNET",
+		        "android.permission.ACCESS_WIFI_STATE",
+		        "android.permission.READ_PHONE_STATE",
+		        "android.permission.ACCESS_NETWORK_STATE",
+        	},
+      		supportsScreens =
+      		{
+		         requiresSmallestWidthDp = 640,
+	        	 smallScreens = false,
+	        	 normalScreens = true,
+       			 largeScreens = true,
+		         xlargeScreens = true,
+      		}
+    	},
+}
