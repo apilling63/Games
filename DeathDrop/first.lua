@@ -213,7 +213,7 @@ function scene:createScene(event)
 	whiteSquares = {}
 	squares = {}
 	
-	currentLevel = 4
+	currentLevel = 1
 		
 	sequenceIndex = 1
 
@@ -236,32 +236,9 @@ function scene:createScene(event)
 	
 	insertFinishSquare()
 	
-	text = utility.addBlackCentredText("", 600, foreground, 50)
-	--showText("LEVEL " .. currentLevel)
-	
-	--[[local saveData = 
-	"<!DOCTYPE html>\
-<html>	\
-	<body style=\"padding:0px; margin:0px; width:100%; height:100%;\">\
-		<iframe id=\"playerId\" width=\"480\" height=\"390\" src=\"http://www.youtube.com/embed/RBumgq5yVrA?html5=1\"></iframe>\
-		</body></html>"	
-	
-local path = system.pathForFile( "youtube.html", system.ResourceDirectory )
+	text = utility.addBlackCentredText("", 480, foreground, 50)
+	showText("LEVEL " .. currentLevel)
 
-local file = io.open( path, "w" )
-file:write( saveData )
-
-io.close( file )
-file = nil]]--
-	
-	
-	
-	local webView = native.newWebView( 300, 400, 640, 390 )
-webView:addEventListener( "urlRequest", webListener )
-	
---webView:request( "http://www.coronalabs.com/" )
--- or
-webView:request( "youtube.html", system.ResourceDirectory )
 	
 end
 
