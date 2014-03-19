@@ -25,6 +25,14 @@ local touchSquare
 local text
 local isFirstMove
 
+local function makeSquaresInvisible()
+
+	for i = 1, #squares do
+		squares[i].isVisible = false
+	end
+		
+end
+
 local function showText(toShow)
 	text.text = toShow
 	text.alpha = 1
@@ -34,6 +42,7 @@ end
 local function loseALife()
 	person:scale(5, 5)
 	start.isVisible = true
+	start.textBox.isVisible = true
 	person.isVisible = true
 	person.x = start.x
 	person.y = start.y
@@ -41,6 +50,7 @@ local function loseALife()
 	showText("LOSE A LIFE")
 	sequenceIndex = 1
 	isFirstMove = true
+	makeSquaresInvisible()	
 end
 
 local function removePerson()
@@ -58,20 +68,17 @@ local function moveSquares()
 
 		if isFirstMove == false then
 			start.isVisible = false
+			start.textBox.isVisible = false
 			
 			if person.currentIndex == 0 then
 				dropDead()
 			end
 
 			timer.performWithDelay(2000, moveSquares)			
-		else
-			timer.performWithDelay(4000, moveSquares)
-			isFirstMove = false			
+		
 		end
 		
-		for i = 1, #squares do
-			squares[i].isVisible = false
-		end
+		makeSquaresInvisible()
 
 		for i = 1, #sequence[sequenceIndex] do
 			squares[sequence[sequenceIndex][i]].isVisible = true	
@@ -103,7 +110,7 @@ local function resetSquares()
 	local movement = -0.5 * (width - 1)
 	
 	for i = 1, width * width do
-		local whiteSquare = utility.addNewPicture("whitesquare.png", foreground)
+		local whiteSquare = utility.addNewPicture("cloud.png", foreground)
 		utility.putInCentre(whiteSquare)
 		whiteSquare.x = whiteSquare.x + (gridWidth * (movement + ((i - 1) % width)))
 		whiteSquare.y = whiteSquare.y + (gridWidth * (movement - 1 + (math.ceil(i / width))))
@@ -124,10 +131,12 @@ local function insertFinishSquare()
 	finish.x = 320
 	finish.y = 100
 	finish.index = -1
+	finish.textBox = utility.addBlackCentredText("FINISH", finish.y, foreground, 40)
 	inPlay = true	
 	isFirstMove = true	
 	person:toFront()
 	moveSquares()
+	showText("TAP A CLOUD TO MOVE")	
 end
 
 local function levelComplete()
@@ -142,9 +151,16 @@ local function levelComplete()
 	finish.index = 0
 	start:removeSelf()
 	person.currentIndex = 0
-	transition.to(finish, {time = 2000, y = (start.y), onComplete=insertFinishSquare})
-	transition.to(person, {time = 2000, y = (start.y)})
+	local targetY = start.y
 	start = finish
+	
+	transition.to(start, {time = 2000, y = (targetY), onComplete=insertFinishSquare})
+	transition.to(person, {time = 2000, y = (targetY)})
+	transition.to(start.textBox, {time = 2000, y = (targetY)})
+	
+	start.textBox.text = "START"
+	start.textBox:toFront()		
+	
 	resetSquares()
 	showText("LEVEL " .. currentLevel)
 end
@@ -175,7 +191,7 @@ end
 touchSquare = function(self, event)
 	if event.phase == "began" and inPlay then
 		print(self.index)
-	
+		
 		if areSquaresAdjacent(self.index, person.currentIndex) then
 			person.currentIndex = self.index
 			person.x = self.x
@@ -185,25 +201,12 @@ touchSquare = function(self, event)
 				levelComplete()
 			end
 		end
+		
+		if isFirstMove then
+			isFirstMove = false					
+			moveSquares()
+		end		
 	end
-end
-
-local function webListener( event )
-	text.text = "hello"
-
-    if event.url then
-        text.text =  "You are visiting: " .. event.url 
-    end
-
-    if event.type then
-        text.text =  "The event.type is " .. event.type -- print the type of request
-    end
-
-    if event.errorCode then
-        text.text =  "Error!"
-    end
-        
-    return false
 end
 
 -- what to do when the screen loads
@@ -226,19 +229,21 @@ function scene:createScene(event)
 	start.x = 320
 	start.y = 880
 	start.index = 0
+	
+	start.textBox = utility.addBlackCentredText("START", start.y, foreground, 40)
 		
 	person = utility.addNewPicture("person.png", foreground)
 	person.x = start.x
 	person.y = start.y
 	person.currentIndex = 0
 	person:scale(0.5, 0.5)
-	resetSquares()
 	
-	insertFinishSquare()
+	resetSquares()
 	
 	text = utility.addBlackCentredText("", 480, foreground, 50)
 	showText("LEVEL " .. currentLevel)
-
+		
+	insertFinishSquare()
 	
 end
 
