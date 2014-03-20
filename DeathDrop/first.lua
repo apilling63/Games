@@ -131,7 +131,7 @@ local function insertFinishSquare()
 	finish.x = 320
 	finish.y = 100
 	finish.index = -1
-	finish.textBox = utility.addBlackCentredText("FINISH", finish.y, foreground, 40)
+	finish.textBox = utility.addBlackCentredText("", finish.y, foreground, 40)
 	inPlay = true	
 	isFirstMove = true	
 	person:toFront()
@@ -158,7 +158,7 @@ local function levelComplete()
 	transition.to(person, {time = 2000, y = (targetY)})
 	transition.to(start.textBox, {time = 2000, y = (targetY)})
 	
-	start.textBox.text = "START"
+	start.textBox.text = ""
 	start.textBox:toFront()		
 	
 	resetSquares()
@@ -189,23 +189,28 @@ local function areSquaresAdjacent(squareIndex1, squareIndex2)
 end
 
 touchSquare = function(self, event)
-	if event.phase == "began" and inPlay then
+	if event.phase == "began" and inPlay and self.index ~= 0 then
 		print(self.index)
 		
-		if areSquaresAdjacent(self.index, person.currentIndex) then
-			person.currentIndex = self.index
-			person.x = self.x
-			person.y = self.y
-			
-			if self.index == -1 then
-				levelComplete()
-			end
-		end
+		if isFirstMove and self.index == -1 then
+			-- clicking finish on start
+		else
 		
-		if isFirstMove then
-			isFirstMove = false					
-			moveSquares()
-		end		
+			if areSquaresAdjacent(self.index, person.currentIndex) then
+				person.currentIndex = self.index
+				person.x = self.x
+				person.y = self.y
+			
+				if self.index == -1 then
+					levelComplete()
+				end
+			end
+		
+			if isFirstMove then
+				isFirstMove = false					
+				moveSquares()
+			end		
+		end
 	end
 end
 
@@ -230,7 +235,7 @@ function scene:createScene(event)
 	start.y = 880
 	start.index = 0
 	
-	start.textBox = utility.addBlackCentredText("START", start.y, foreground, 40)
+	start.textBox = utility.addBlackCentredText("", start.y, foreground, 40)
 		
 	person = utility.addNewPicture("person.png", foreground)
 	person.x = start.x
@@ -251,8 +256,6 @@ end
 -- add all the event listening
 function scene:enterScene(event)
 	storyboard.purgeScene("levels")
-
-	start.touch = touchSquare
 	start:addEventListener("touch", start)	
 end
 
